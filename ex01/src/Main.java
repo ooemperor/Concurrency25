@@ -17,12 +17,10 @@ public class Main {
     }
 
     public static void runTask1() {
-        System.out.println("Running Task 1");
         runTaskGeneric(1);
     }
 
     public static void runTask2() {
-        System.out.println("Running Task 2");
         runTaskGeneric(2);
     }
 
