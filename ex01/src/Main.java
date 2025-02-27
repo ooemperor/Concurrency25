@@ -1,7 +1,9 @@
-import task1.Counter;
-import task1.CounterSynced;
-import task1.ICounter;
-import task1.Manager;
+import task1.*;
+import task3.Buffer;
+import task3.Consumer;
+import task3.Producer;
+import java.util.ArrayList;
+
 
 /**
  * Main class file for the exercise 01
@@ -12,8 +14,9 @@ public class Main {
     public static void main(String[] args){
         System.out.println("Starting");
 
-        runTask1();
-        runTask2();
+        //runTask1();
+        //runTask2();
+        runTask3();
     }
 
     public static void runTask1() {
@@ -46,6 +49,27 @@ public class Main {
             catch (InterruptedException exception){
                 System.out.println("ERROR Thread has been interrupted");
             }
+        }
+    }
+
+    public static void runTask3(){
+        System.out.println("Running Task 3");
+        int amount = 4;
+        int bufferSize = 10;
+        ArrayList<Thread> producers = new ArrayList<Thread>();
+        ArrayList<Thread> consumers = new ArrayList<Thread>();
+
+
+        Buffer buffer = new Buffer(bufferSize);
+        for (int i = 0; i < amount; i++){
+            Thread threadProducer = new Thread(new Producer(buffer, i));
+            producers.add(threadProducer);
+
+            Thread threadConsumer = new Thread(new Consumer(buffer, i));
+            consumers.add(threadConsumer);
+
+            threadProducer.start();
+            threadConsumer.start();
         }
     }
 }
