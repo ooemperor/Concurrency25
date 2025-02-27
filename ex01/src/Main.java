@@ -14,8 +14,8 @@ public class Main {
     public static void main(String[] args){
         System.out.println("Starting");
 
-        //runTask1();
-        //runTask2();
+        runTask1();
+        runTask2();
         runTask3();
     }
 
