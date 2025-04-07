@@ -47,6 +47,7 @@ public class SavageBasic {
 
         @Override
         public void run() {
+            // we do not do anything while the refill has not been requested --> no problem in sync
             while (!this.pot.isRefillRequested()) {
             }
             System.out.println("Pot must be refilled");
@@ -67,13 +68,13 @@ public class SavageBasic {
         @Override
         public void run() {
             synchronized (pot) {
-                //System.out.println("Savage nr. " + this.id + " is in critical state");
-                //System.out.println(this.pot.isRefillRequested());
-                //System.out.println(this.pot.isEmpty());
+                // when the pot is empty and the refill has not been requested we request it.
+                // since access to the pot is synchronized, we cannot request multiple and we wait.
                 if (this.pot.isEmpty() && !this.pot.isRefillRequested()) {
                     System.out.println("Savage nr. " + this.id + " requested refill");
                     this.pot.requestRefill();
                 }
+                // still in critical phase, no other can enter
                 while (this.pot.isEmpty()) ; // wait for the pot to become filled again
                 System.out.println("Savage nr. " + this.id + " is now eating");
                 this.pot.consume();
