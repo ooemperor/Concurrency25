@@ -7,6 +7,7 @@ public class SavageBasic {
     static class Pot {
         private int capacity;
         private final int MAX_CAPACITY;
+        // using volatile here since we want to have all the updates at all times
         private volatile boolean requested;
 
         public Pot(int capacity) {

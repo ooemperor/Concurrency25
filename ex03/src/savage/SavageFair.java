@@ -10,6 +10,7 @@ public class SavageFair {
     static class Pot {
         private int capacity;
         private final int MAX_CAPACITY;
+        // using volatile here since we want to have all the updates at all times
         private volatile boolean requested;
 
         public Pot(int capacity) {
@@ -59,6 +60,8 @@ public class SavageFair {
         }
 
         public int getRound() {
+            // used to see which serving round we are doing currently
+            // since we are using int we will get the result floored
             return this.mealsServed / this.savageCount;
         }
     }
@@ -99,14 +102,19 @@ public class SavageFair {
         public void run() {
             int myRoundCount = 0;
             while (myRoundCount < 3) {
+                // wait for the servingRound to get bigger until i reach my turn again, where i try to enter
                 while (groupMeal.getRound() < myRoundCount);
                 synchronized (pot) {
+                    // when the pot is empty and the refill has not been requested we request it.
+                    // since access to the pot is synchronized, we cannot request multiple and we wait.
                     if (this.pot.isEmpty() && !this.pot.isRefillRequested()) {
                         System.out.println("Savage nr. " + this.id + " requested refill");
                         this.pot.requestRefill();
                     }
+                    // still in critical phase, no other can enter
                     while (this.pot.isEmpty()) ; // wait for the pot to become filled again
                     System.out.println("Savage nr. " + this.id + " is now eating");
+                    // update the pot and the round now.
                     this.pot.consume();
                     this.groupMeal.eat();
                     myRoundCount++;
